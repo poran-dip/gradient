@@ -1,9 +1,10 @@
 {
   "name": "gradient",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a nice css background",
   "author": "Poran Dip",
+  "license": "Apache-2.0",
   "scripts": {
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "biome ci .",
