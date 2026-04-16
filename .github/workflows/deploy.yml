@@ -33,7 +33,7 @@ jobs:
         run: stylelint "**/*.css"
 
       - name: Lint JS
-        run: npx @biomejs/biome ci .
+        run: npx @biomejs/biome ci "**/*.js"
 
   build:
     needs: lint
