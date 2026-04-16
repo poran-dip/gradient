@@ -25,11 +25,17 @@
     font-family: verdana;
     color: white;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  main {
+    display: flex;
     flex-direction: column;
     gap: 24px;
     align-items: center;
     justify-content: center;
-    padding: 12px;
   }
 }
 
