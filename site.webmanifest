@@ -2,6 +2,7 @@
   "name": "Gradient",
   "short_name": "Gradient",
   "description": "a nice css background",
+  "version": "1.0.0",
   "categories": ["utilities", "developer tools", "design"],
   "icons": [
     {
