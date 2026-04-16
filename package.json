@@ -1,0 +1,25 @@
+{
+  "name": "gradient",
+  "private": true,
+  "version": "1.0.3",
+  "description": "a nice css background",
+  "author": "Poran Dip",
+  "scripts": {
+    "lint:css": "stylelint \"**/*.css\"",
+    "lint:js": "biome ci .",
+    "build:html": "html-minifier-terser index.html -o dist/index.html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
+    "build:css": "csso styles.css --output dist/styles.css",
+    "build:js": "terser script.js -o dist/script.js --compress --mangle",
+    "build": "npm run build:html && npm run build:css && npm run build:js",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@playwright/test": "^1.59.1",
+    "csso-cli": "^4.0.2",
+    "html-minifier-terser": "^7.2.0",
+    "stylelint": "^17.8.0",
+    "stylelint-config-standard": "^40.0.0",
+    "terser": "^5.46.1"
+  }
+}

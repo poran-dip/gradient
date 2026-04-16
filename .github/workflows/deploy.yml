@@ -21,19 +21,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
       - name: Validate HTML
         uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
           root: .
 
-      - name: Install linters
-        run: npm install -g stylelint stylelint-config-standard biome
-
       - name: Lint CSS
-        run: stylelint "**/*.css"
+        run: npm run lint:css
 
       - name: Lint JS
-        run: npx @biomejs/biome ci .
+        run: npm run lint:js
 
   build:
     needs: lint
@@ -44,33 +48,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      - name: Cache npm
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-
-      - name: Install minifiers
-        run: npm install -g html-minifier-terser terser csso-cli
+      - run: npm ci
 
       - name: Create dist
         run: mkdir -p dist
 
-      - name: Minify HTML
-        run: |
-          html-minifier-terser index.html \
-            -o dist/index.html \
-            --collapse-whitespace \
-            --remove-comments \
-            --minify-css true \
-            --minify-js true
-
-      - name: Minify CSS
-        run: csso styles.css --output dist/styles.css
-
-      - name: Minify JS
-        run: terser script.js -o dist/script.js --compress --mangle
+      - name: Build
+        run: npm run build
 
       - name: Copy assets
         run: cp -r *.png *.ico *.svg *.webmanifest dist/ 2>/dev/null || true
@@ -93,3 +79,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+  
+  e2e:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run tests
+        run: npm run test:e2e
