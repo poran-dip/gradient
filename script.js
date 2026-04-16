@@ -68,4 +68,4 @@ function init() {
   });
 }
 
-init();
+requestIdleCallback(() => init());
