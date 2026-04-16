@@ -1,6 +1,18 @@
 const copyBtn = document.querySelector(".copy");
 
-const code = `<style>
+const css = (strings, ...values) => strings.raw.join("");
+const ButtonState = Object.freeze({
+  IDLE: "Copy",
+  SUCCESS: "Copied!",
+  ERROR: "Error",
+});
+
+const COPY_BUTTON_CONFIG = {
+  blurOnClick: true,
+  resetDelay: 1000,
+};
+
+const code = css`<style>
   .animated-gradient {
     position: fixed;
     inset: 0;
@@ -27,21 +39,33 @@ const code = `<style>
 <div class="animated-gradient"></div>
 `;
 
-document.querySelector(".code-snippet").textContent = code;
+const ClipboardManager = {
+  async write(text) {
+    return navigator.clipboard.writeText(text);
+  },
+};
+
+function transitionButton(state, duration = COPY_BUTTON_CONFIG.resetDelay) {
+  copyBtn.textContent = ButtonState[state];
+  if (state !== "IDLE") setTimeout(() => transitionButton("IDLE"), duration);
+}
 
 async function copyCode() {
   try {
-    await navigator.clipboard.writeText(code);
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => (copyBtn.textContent = "Copy"), 1000);
+    await ClipboardManager.write(code);
+    transitionButton("SUCCESS");
   } catch (err) {
-    copyBtn.textContent = "Error";
-    setTimeout(() => (copyBtn.textContent = "Copy"), 1000);
+    transitionButton("ERROR");
     console.error("Failed to copy: ", err);
   }
 }
 
-copyBtn.addEventListener("click", (e) => {
-  copyCode();
-  e.currentTarget.blur();
-});
+function init() {
+  document.querySelector(".code-snippet").textContent = code;
+  copyBtn.addEventListener("click", async (e) => {
+    if (COPY_BUTTON_CONFIG.blurOnClick) e.currentTarget.blur();
+    await copyCode();
+  });
+}
+
+init();
