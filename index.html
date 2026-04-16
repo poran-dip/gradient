@@ -19,15 +19,55 @@
     />
     <meta name="apple-mobile-web-app-title" content="Gradient" />
     <link rel="manifest" href="/gradient/site.webmanifest" />
+    <meta name="theme-color" content="#23a6d5" />
+    <meta name="background-color" content="#23a6d5" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:title" content="Animated Gradient" />
+    <meta property="og:description" content="a nice css background" />
+    <link rel="preload" href="styles.css" as="style" />
+    <link rel="preload" href="script.js" as="script" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="animated-gradient"></div>
-    <h1 class="title">Nice CSS background (gradient + animated)</h1>
-    <div class="code-wrapper">
-      <button class="copy">Copy</button>
-      <pre class="code-block"><code class="code-snippet"></code></pre>
+    <div
+      class="animated-gradient"
+      role="presentation"
+      aria-hidden="true"
+      data-animation="gradient"
+      data-duration="15s"
+      data-easing="ease"
+      data-direction="infinite"
+    ></div>
+    <h1 class="title" role="heading" aria-level="1" aria-label="Page title">
+      Nice CSS background (gradient + animated)
+    </h1>
+    <div
+      class="code-wrapper"
+      role="region"
+      aria-label="Code snippet"
+      aria-live="polite"
+    >
+      <button
+        class="copy"
+        type="button"
+        aria-label="Copy code to clipboard"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Copy
+      </button>
+      <pre
+        class="code-block"
+        role="region"
+        aria-label="CSS code block"
+        aria-readonly="true"
+      ><code 
+        class="code-snippet"
+        role="document"
+        aria-label="Copyable CSS code"
+        aria-multiline="true"
+      ></code></pre>
     </div>
-    <script src="script.js"></script>
+    <script src="script.js" type="module" defer></script>
   </body>
 </html>
