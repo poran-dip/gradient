@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const URL = "https://poran-dip.github.io/gradient/";
 
@@ -18,8 +18,7 @@ test("page loads and code is copyable", async ({ page }) => {
     return await navigator.clipboard.readText();
   });
 
-  const normalize = (str) =>
-    str.replace(/\s+/g, " ").trim();
+  const normalize = (str) => str.replace(/\s+/g, " ").trim();
 
   expect(normalize(clipboardText)).toBe(normalize(codeText));
 });
