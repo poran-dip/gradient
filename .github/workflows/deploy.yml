@@ -54,26 +54,26 @@ jobs:
       - name: Install minifiers
         run: npm install -g html-minifier-terser terser csso-cli
 
-      - name: Create dist/gradient
-        run: mkdir -p dist/gradient
+      - name: Create dist
+        run: mkdir -p dist
 
       - name: Minify HTML
         run: |
           html-minifier-terser index.html \
-            -o dist/gradient/index.html \
+            -o dist/index.html \
             --collapse-whitespace \
             --remove-comments \
             --minify-css true \
             --minify-js true
 
       - name: Minify CSS
-        run: csso styles.css --output dist/gradient/styles.css
+        run: csso styles.css --output dist/styles.css
 
       - name: Minify JS
-        run: terser script.js -o dist/gradient/script.js --compress --mangle
+        run: terser script.js -o dist/script.js --compress --mangle
 
       - name: Copy assets
-        run: cp -r *.png *.ico *.svg *.webmanifest dist/gradient/ 2>/dev/null || true
+        run: cp -r *.png *.ico *.svg *.webmanifest dist/ 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
