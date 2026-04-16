@@ -1,0 +1,95 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate HTML
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+        with:
+          root: .
+
+      - name: Install linters
+        run: npm install -g stylelint stylelint-config-standard biome
+
+      - name: Lint CSS
+        run: stylelint "**/*.css"
+
+      - name: Lint JS
+        run: npx @biomejs/biome ci .
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+
+      - name: Install minifiers
+        run: npm install -g html-minifier-terser terser csso-cli
+
+      - name: Create dist/gradient
+        run: mkdir -p dist/gradient
+
+      - name: Minify HTML
+        run: |
+          html-minifier-terser index.html \
+            -o dist/gradient/index.html \
+            --collapse-whitespace \
+            --remove-comments \
+            --minify-css true \
+            --minify-js true
+
+      - name: Minify CSS
+        run: csso styles.css --output dist/gradient/styles.css
+
+      - name: Minify JS
+        run: terser script.js -o dist/gradient/script.js --compress --mangle
+
+      - name: Copy assets
+        run: cp -r *.png *.ico *.svg *.webmanifest dist/gradient/ 2>/dev/null || true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "dist"
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

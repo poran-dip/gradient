@@ -1,6 +1,6 @@
 const copyBtn = document.querySelector(".copy");
 
-const css = (strings, ...values) => strings.raw.join("");
+const css = (strings) => strings.raw.join("");
 const ButtonState = Object.freeze({
   IDLE: "Copy",
   SUCCESS: "Copied!",
